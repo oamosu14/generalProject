@@ -1,0 +1,89 @@
+Interview Links
+https://www.youtube.com/watch?v=p3tvtXOg5rg&t=3411s
+
+
+AWS Link
+https://www.youtube.com/watch?v=DERzYnthq1s&list=WL&index=26
+
+AZURE Link
+https://www.youtube.com/watch?v=wdUK7bCMXqs
+https://www.youtube.com/watch?v=1edLpzK92aw
+
+Interview Links
+https://www.youtube.com/watch?v=kzvxaD0Hwt8
+
+
+https://www.youtube.com/watch?v=_gCwCOhMcog&t=966s
+
+https://www.youtube.com/watch?v=XOvlsrCv3Bk&t=693s
+
+https://www.youtube.com/watch?v=HIXzJ3Rz9po
+
+https://www.youtube.com/watch?v=AimCNTzDlVo
+
+https://www.youtube.com/watch?v=HEEnLZV2wGI
+
+https://www.youtube.com/watch?v=4U2gjOCp2wM
+
+https://www.youtube.com/watch?v=i23D7wNCuuc
+
+https://www.youtube.com/watch?v=EkNq4TrHP_U
+
+https://www.youtube.com/watch?v=vAdR-M9H_1w
+
+https://www.youtube.com/watch?v=bju_FdCo42w&list=PLtK75qxsQaMLZSo7KL-PmiRarU7hrpnwK
+
+SCRUM
+https://www.youtube.com/watch?v=aQrsVfjbQZ4
+https://www.youtube.com/watch?v=XU0llRltyFM
+https://www.youtube.com/watch?v=9TycLR0TqFA
+
+Jenkins
+https://www.youtube.com/watch?v=89yWXXIOisk
+
+
+DevOps
+https://www.youtube.com/watch?v=nE4b9mW2ym0
+
+https://www.youtube.com/watch?v=_I94-tJlovg
+
+GIT
+https://www.youtube.com/watch?v=OdbBmvfThJY&list=PLsyeobzWxl7q2eaUkorLZExfd7qko9sZC
+
+https://www.youtube.com/watch?evv=fEGSA68uAR4&index=7&list=PLtK75qxsQaMLZSo7KL-PmiRarU7hrpnwK
+
+https://www.youtube.com/watch?v=ZtVpz5VWjAs   - linux boot process
+
+https://www.youtube.com/watch?v=DvrvUhdm3zo   - runlevel modes
+
+
+LINUX INTERVIEW QUESTIONS:
+
+https://www.youtube.com/watch?v=p3tvtXOg5rg
+
+https://www.youtube.com/watch?v=l0QGLMwR-lY
+
+bootup process
+https://www.youtube.com/watch?v=RdbyPwo4W2E
+
+BOOTUP PROCESS
+https://www.youtube.com/watch?v=RgLMBXg5b9I
+
+https://www.youtube.com/watch?v=mHB0Z-HUauo
+
+
+
+CentOS 7 Installation
+https://www.youtube.com/watch?v=A-VZwc-0Y1M
+
+
+Sripting
+https://www.youtube.com/watch?v=hwrnmQumtPw
+https://www.youtube.com/watch?v=AcSkkNAsGCY
+https://www.youtube.com/watch?v=hwrnmQumtPw&t=110s
+
+AWK Command
+https://www.youtube.com/watch?v=az6vd0tGhJI
+
+SED Command
+https://www.youtube.com/watch?v=s0JHRcfWxww

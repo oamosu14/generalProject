@@ -1,0 +1,51 @@
+Ansible Installation and Setup
+
+##Requirements
+Ansible Control Node    --> Linux
+Ansible Managed Node1   --> Linux, Mac, 
+Ansible Managed Node2
+
+
+##Required Packages/Programmes  -- must be installed and enable
+SSH
+Python
+
+
+##Commands
+yum install epel-release -y
+wget https://archives.fedoraproject.org/pub/archive/epel/5/x86_64/epel-release-5-4.noarch.rpm
+rpm –ivh epel-release-latest-5.noarch.rpm
+yum repolist
+yum install python
+python --version
+yum install ansible
+ansible --version
+
+
+Configuration files and location
+ansible --version
+
+COnfigure Password Auth
+# vi /etc/ssh/sshd_config
+
+
+How the configuration file should look like to achieve passwordless access.
+
+
+
+visudo
+
+ansible_username	ALL=(ALL)	NOPASSWD:	ALL
+
+
+[webserver]
+192.168.1.100
+
+[dbserver]
+10.1.0.100
+
+
+Ansible Commands
+ansible --list-host all
+ansible all -m shell -a 'df -h'
+ansible all -m ping

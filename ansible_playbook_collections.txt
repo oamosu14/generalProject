@@ -1,0 +1,541 @@
+----------------------------vi simple-devops-project.yml----------------------------------
+
+---
+- hosts: all
+  become: true
+
+  tasks:
+
+   - name: stop current running container
+      command: docker stop simple-devops-container
+      ignore_errors: yes
+
+   - name: remove stopped container
+      command: docker rm simple-devops-container
+      ignore_errors: yes
+
+   - name: remove docker image 
+      command: docker rmi simple-devops-image
+      ignore_errors: yes
+
+
+-------------- vi create-simple-devops-image.yml ----------------------------------
+
+---
+- hosts: all
+  become: true
+
+  tasks:
+  - name: create docker image using war file
+    command: docker build -t simple-devops-image:latest .
+    args:
+       chdir: /opt/docker
+
+   - name: create tag to image
+     command: docker tag simple-devops-image oamosu/simple-devops-image
+
+   - name: push image on to dockerhub
+     command: docker push oamosu/simple-devops-image
+
+   - name: remove docker images from ansible server
+      command: docker rmi simple-devops-image:lates oamosu/simple-devops-image
+      ignore_errors: yes
+
+
+---------------------------------vi create-simple-devops-project.yml--------------------------
+
+---
+- hosts: all
+   become: true
+   task
+
+   - name: stop current running container
+      command: docker stop simple-devops-container
+      ignore_error: yes
+
+   - name: remove stopped container
+      command: docker rm simple-devops-container
+      ignore_error: yes
+
+   - name: remove docker image
+      command: docker rmi oamosu/simple-devops-image:latest
+      ignore_error: yes
+
+   - name: pull docker image from dockerhub
+      command: docker pull oamosu/simple-devops-image:latest
+
+   - create container using simple-devops-image
+      command: docker run -d --name simple-devops-container -p 8080:8080 oamosu/simple-devops-image:latest
+
+
+
+---------------------------------------------------------------------------------------
+
+
+---
+- name: playbook for variables
+  hosts: webserver
+  vars:
+    # variables     ( a-z | A-Z | 0-9 |  _ )
+    #eg.  pkg pkg1 pkg_1 ( correct )  1pkg 2pkg   _pkg ( incorrect )
+    web_pkg: httpd
+    web_srv: httpd
+    fw_pkg: firewalld
+    fw_srv: firewalld
+    fw_rule: http
+  tasks:
+    - name: installing {{ web_pkg }} rpm
+      yum:
+        name: "{{ web_pkg }}"
+        state: latest
+
+    - name: starting {{ web_srv }} service
+      service:
+        name: "{{ web_srv }}"
+        state: started
+        enabled: true
+
+    - name: installing {{ fw_pkg }} rpm
+      yum:
+        name: "{{ fw_pkg }}"
+        state: latest
+
+    - name: starting {{ fw_srv }} rpm
+      service:
+        name: "{{ fw_srv }}"
+        state: started - name: starting {{ fw_srv }} rpm
+      service:
+        name: "{{ fw_srv }}"
+        state: started
+        enabled: true
+
+    - name: allow {{ fw_rule }} protocol in firewall
+      firewalld:
+        service: "{{ fw_rule }}"
+        #port: 80/tcp
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: copy index.html file
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
+...
+
+
+
+
+[root@ansible-control-node ansible]# cat conditions1.yml
+---
+- name: play for conditional statement
+  hosts: all
+  become: true
+  tasks:
+  - name: installing pkg if OS is CentOS
+    yum:
+     name: elinks
+     state: present
+
+  - name: installing pkg if OS is Ubuntu
+    apt:
+     name: apache2
+     state: present
+...
+
+
+=========================================================================
+
+---------------------1)
+
+##Create a basic playbook for all servers in the Ansible inventory.
+Create a basic playbook in /home/ansible/bootstrap.yml that completes the noted task required for all servers in the Ansible inventory.
+
+Create the file /home/ansible/bootstrap.yml and add the following content:
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: edit host file
+      lineinfile:
+        path: /etc/hosts
+        line: "169.168.0.1 ansible.xyzcorp.com"
+    - name: install elinks
+      package:
+        name: elinks
+        state: latest
+    - name: create audit user
+      user:
+        name: xyzcorp_audit
+        state: present
+    - name: update motd
+      copy:
+        src: /home/ansible/motd
+        dest: /etc/motd
+    - name: update issue
+      copy:
+        src: /home/ansible/issue
+        dest: /etc/issue
+
+##Add a section to the playbook for the Network servers in the Ansible inventory. Add a section to the playbook in /home/ansible/bootstrap.yml that completes the noted task required for the network servers in the Ansible inventory.
+
+Create a play in the file /home/ansible/bootstrap.yml similar to the following:
+
+ - hosts: network
+   become: yes
+   tasks:
+     - name: install netcat
+       yum:
+         name: nmap-ncat
+         state: latest
+     - name: create network user
+       user:
+         name: xyzcorp_network
+         state: present
+
+
+##Add a section to the playbook for the SysAdmin servers in the Ansible inventory. Add a section to the playbook in /home/ansible/bootstrap.yml that completes the noted task required for the sysadmin servers in the Ansible inventory.
+
+Create a play in the file /home/ansible/bootstrap.yml similar to the following:
+
+ - hosts: sysadmin
+   become: yes
+   tasks:
+     - name: copy tarball
+       copy:
+         src: /home/ansible/scripts.tgz
+         dest: /mnt/storage/
+
+
+##Execute playbook to verify your playbook works correctly. Execute playbook /home/ansible/bootstrap.yml to verify your playbook works correctly.
+
+Run ansible-playbook /home/ansible/bootstrap.yml from the control node.
+
+
+------------------------------2)
+
+Description
+Ansible is frequently used to manage software configuration and deployment. This exercise allows you to deploy and configure an NFS server using key features of Ansible.
+
+
+##Create the necessary template files on the Ansible control node.
+Create the files exports.j2 and etc.hosts.j2 in /home/ansible with the noted content:
+
+vi /home/ansible/exports.j2
+{{ share_path }} *(rw)
+
+vi /home/ansible/etc.hosts.j2
+127.0.0.1    localhost {{ ansible_hostname}}
+{{ nfs_ip }}    {{ nfs_hostname }}
+
+
+##Create a playbook for the server 'nfs' in the Ansible inventory.
+Create a playbook in /home/ansible/nfs.yml that meets the provided specification for the server nfs in the ansible inventory.
+
+Create a playbook in /home/ansible/nfs.yml with the following content:
+
+- hosts: nfs
+  become: yes
+  vars:
+    share_path: /mnt/nfsroot
+  tasks:
+    - name: install nfs
+      yum:
+        name: nfs-utils
+        state: latest
+    - name: start and enable nfs-server
+      service:
+        name: nfs-server
+        state: started
+        enabled: yes
+    - name: configure exports
+      template:
+        src: /home/ansible/exports.j2
+        dest: /etc/exports
+      notify: update nfs
+  handlers:
+    - name: update nfs exports
+      command: exportfs -a
+      listen: update nfs
+
+
+##Add a play for the remote host group.
+Edit /home/ansible/nfs.yml such that changes are executed on the remote host group to meet the provided requirements.
+
+Edit /home/ansible/nfs.yml to contain the following content after the nfs play:
+
+  - hosts: remote
+    become: yes
+    vars:
+      nfs_ip: "{{ hostvars['nfs']['ansible_default_ipv4']['address'] }}"
+      nfs_hostname: "{{ hostvars['nfs']['ansible_hostname'] }}"
+    vars_files:
+      - /home/ansible/user-list.txt
+    tasks:
+      - name: configure hostsfile
+        template:
+          src: /home/ansible/etc.hosts.j2
+          dest: /etc/hosts.nfslab
+      - name: get file status
+        stat:
+          path: /opt/user-agreement.txt
+        register: filestat
+      - name: debug info
+        debug:
+          var: filestat
+      - name: create users
+        user:
+          name: "{{ item }}"
+        when:  filestat.stat.exists
+        loop: "{{ users }}"
+
+
+##Execute playbook to verify your playbook works correctly.
+Execute playbook /home/ansible/nfs.yml to verify your playbook works correctly.
+
+Run ansible-playbook /home/ansible/nfs.yml from the control node.
+
+------------------------------3)
+
+Description
+There are a number of features unique to Ansible playbooks which provide robust functionality. This exercise explores many of these features in a practical scenario of deploying a web server. Most notably, this exercise deals with confidential data in an Ansible vault and working with tags in Ansible playbooks.
+
+
+
+------------------------------4)
+
+--------------->> Conditionals Statement in Ansible Playbook
+Conditional statements are mostly used in Ansible playbooks where there is a mix of different variables, each representing different entities such as software packages, servers, networking devices and so on
+
+Using ‘when’ conditional statement
+In Ansible, ‘when’ statement is used instead to determine the outcome of a variable. So instead of using the if-else statement, you define what you want to happen.
+
+Syntax:
+when: <condition>
+
+
+---
+- name: install Apache Web-Server
+  hosts: all
+  tasks:
+    - name: Install Apache on CentOS  Server
+      yum: name=httpd  state=present
+      become: yes
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Apache on Ubuntu Server
+      apt:name=apache2 state=present
+      become: yes
+      when: ansible_os_family == "Debian"
+
+------------------------>>Using ‘when’ with the logical AND operator
+Suppose you only want Ansible to install apache web server on Ubuntu servers whose version is 18.04, how would you go about it?
+
+In this case, you will define another variable which will restrict the installation of Apache to Ubuntu servers on version 18.04. 
+
+---
+- name: install Apache webserver
+  hosts: all
+  tasks:
+    - name: Install Apache on Ubuntu Server
+      apt: name=apache2 state=present
+      become: yes
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+
+
+------------------>>Using ‘when’ with the logical OR Operator
+With OR logical operator, the play is executed when either or all of the conditions are satisfied.
+
+---
+- name: Check disk space usage
+  hosts: all
+  tasks:
+    
+     - name: Check disk space usage on servers
+       shell: df -Th
+       register: result
+      - debug:
+          var: result.stdout_lines
+        when: ansible_os_family == "Debian" or ansible_os_family == "RedHat"
+
+NOTE:
+The above playbook displays disk usage metrics on servers in the setup that fall either under Debian or Red Hat distributions or both. Since both servers in our setup fall under the above-mentioned OS families, the playbook will display disk usage for both servers.
+
+------------------------------5)
+
+VARIABLES IN ANSIBLE
+1)
+---
+ - hosts: all
+   vars:
+     salutations: Hello guys!
+   tasks:
+   - name: Ansible Variable Basic Usage
+       debug:
+       msg: "{{ salutations }}"
+
+
+2)
+- hosts: all
+  vars:
+    students:
+      - Mark
+      - Melisa
+      - Arthur
+      - Kevin
+      - Lisa
+
+  tasks:
+  - name: Ansible List variable Example
+    debug:
+      msg: "{{ students[2] }}"
+
+3)
+
+- hosts: all
+  vars:
+    continents:
+      - Africa
+      - Asia
+      - South America
+      - North America
+      - Europe
+      
+  tasks:
+  - name: Ansible List variable Example
+    debug:
+      msg: "{{ continents [1] }}"
+
+
+--------------------------------------------------------------------------------------
+
+RUN A SCRIPT FROM ANSIBLE PLAYBOOK
+
+Create a script in a separate location, then create the ansible playbook to run the script
+#!/bin/bash
+sudo apt update
+sudo apt-get dist-upgrade -y
+sudo apt-get install git -y
+
+# Create our file to check for in future
+echo "installed git!" >> /home/ansadmin/installed-git.txt
+
+
+# cat run-script.yml
+---
+- name: Deploying patching script
+  hosts: localhost
+  tasks:
+    - script: /home/ansadmin/patch.sh
+
+------------------------------5.1)
+
+[root@ansible-control-node ansible]# cat system_update.yml
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: update the systems
+    yum:
+      name: "*"
+      state: latest
+
+  - name: install epel-release
+    yum:
+     name: epel-release
+     state: latest
+
+  - name: restart system to reboot to newest kernel
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+
+  - name: wait for 10 seconds
+    pause:
+     seconds: 10
+
+  - name: wait for the system to reboot
+    wait_for_connection:
+     connect_timeout: 20
+     sleep: 5
+     delay: 5
+     timeout: 60
+...--
+
+------------------------------6)
+with_item in Ansible
+
+Using with_items:
+
+- name: Install yum packages with_items
+  yum: 
+    name: "{{ item }}"
+  with_items:
+    - git
+    - sshpass
+    - openssl-devel
+
+Since 2.0 you can use a list in the name attribute:
+
+- name: Install yum packages using a list
+  yum:
+    name: 
+      - git
+      - sshpass
+      - openssl-devel
+
+
+---
+- hosts: php
+  sudo: yes
+
+  tasks:
+
+  - name: install packages
+    apt: name={{ item }} update_cache=yes state=latest
+    with_items:
+      - git
+      - mcrypt
+      - nginx
+      - php5-cli
+      - php5-curl
+      - php5-fpm
+      - php5-intl
+      - php5-json
+      - php5-mcrypt
+      - php5-sqlite
+      - sqlite3
+
+------------------------------7)
+
+---
+- hosts: devserver
+  become: yes
+  tasks:
+    - name: Install Apache
+      yum:
+        name: httpd
+        state: latest
+
+    - name: git checkout the website
+      git:
+        dest: /var/www/html
+        repo: https://github.com/insighttechworld/content-webserver-ansible.git
+
+    - name: start the Apache service
+      service:
+        name: httpd
+        state: started
+
+    - name: modify the firewall rules
+      firewalld:
+        service: http
+        permanent: yes
+        state: enabled
+
+
+------------------------------8)
+
+------------------------------9)
+
+------------------------------10)

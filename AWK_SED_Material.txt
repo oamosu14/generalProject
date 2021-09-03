@@ -1,0 +1,266 @@
+AWK and SED Command
+
+
+AWK
+Awk is a scripting language used for manipulating data and generating reports.The awk command programming language requires no compiling, and allows the user to use variables, numeric functions, string functions, and logical operators.
+
+- text processing
+- data extractor
+- reporting tool
+
+There are a couple of special field identifiers. These represent the entire line of text and the last field in the line of text:
+
+$0: Represents the entire line of text.
+$1: Represents the first field.
+$2: Represents the second field.
+$7: Represents the seventh field.
+$45: Represents the 45th field.
+$NF: Stands for “number of fields,” and represents the last field.
+
+AWK command be used with the option -F for field separator to know the data to be extrated.
+
+syntax:
+
+#awk -F ":" '{print $2}' filename
+#awk '{print $2}' filename
+
+ls -l
+
+ls -l | awk '{print $4}' 
+
+1. We want awk to print the first, second, and last field of the quote. Note that although it’s wrapped around in the terminal window, it’s just a single line of text.
+
+We type the following command:
+
+awk '{print $1,$2,$NF}' dennis_ritchie.txt
+
+2. Adding Output Field Separators
+You can also tell awk to print a particular character between fields instead of the default space character. The default output from the date command is slightly peculiar because the time is plonked right in the middle of it. However, we can type the following and use awk to extract the fields we want:
+
+date
+date | awk '{print $2,$3,$6}'
+
+3. We’ll use the OFS (output field separator) variable to put a separator between the month, day, and year. Note that below we enclose the command in single quotes ('), not curly braces ({}):
+
+#date
+#date | awk 'OFS="/" {print$2,$3,$6}'
+#date | awk 'OFS="-" {print$2,$3,$6}'
+
+4. Adding Patterns
+If all we’re interested in are regular user accounts, we can include a pattern with our print action to filter out all other entries. Because User ID numbers are equal to, or greater than, 1,000, we can base our filter on that information.
+
+We type the following to execute our print action only when the third field ($3) contains a value of 1,000 or greater:
+
+awk -F: '$3 >= 1000 {print $1,$6}' /etc/passwd
+
+
+# who
+# who | awk '{print $1}'
+# who | awk '{print $1,$4}'
+
+
+ls -l /tmp | awk -F" " '{print $1,"|" $9}'
+awk '{print}' /tmp/output.txt - all line in the text file
+awk '/colord/ {print}' /tmp/output.txt - matches with given string
+awk -F"x" '{print $1}' passwdfile | sort -n
+awk  '/^[0-9]/ {print}' table - line that start with numeric value
+awk '/[0-9]/ {print}' table - lines that have numeric value
+awk  '/[0-9]$/ {print}' table - lines that ends with numeric value
+
+
+^ caret
+
+=================================================================
+=================================================================
+
+SED
+(Stream EDitor) SED is used for finding, filtering, text substitution, replacement and text manipulations like insertion, deletion search etc. It’s a one of the powerful utility offered by Linux/Unix systems. 
+
+searching
+find and replace
+insert
+delete
+
+
+Syntax
+to insert a line of text in the file on line 2 specifically
+#sed -i '2i\line to be inserted' filename
+
+
+#sed -n 1,10p passwdfile
+#sed 10,20d passwdfile
+#sed G passwdfile
+#sed -i '1i\THIS IS MY PASSWD FILE' passwdfile
+#sed -i '/maureen/aDEVOPS IS COOL' passwdfile
+#sed -i '9s/.*/MIDWEEK CLASS/' passwdfile
+
+# Replacement with the sed command
+1 – Change the first occurrence of the pattern –
+# sed 's/life/leaves/' a.txt
+
+>>>EXAMPLES
+
+# cat a.txt
+life isn't meant to be easy, life is meant to be lived.
+Try to learn & understand something new everyday in life.
+Respect everyone & most important love everyone.
+Don’t hesitate to ask for love & don’t hesitate to show love too.
+Life is too short to be shy.
+In life experience will help you differentiating right from wrong.
+
+# Let’s start with File Spacing
+***1 – Insert one blank line after each line –
+# sed G a.txt
+sed-output
+
+***2 – To insert two blank lines –
+# sed 'G;G' a.txt
+
+3 – Delete blank lines and insert one blank line after each line –
+# sed '/^$/d;G' a.txt
+
+4 – Insert a black line above every line which matches “love” –
+# sed '/love/{x;p;x;}' a.txt
+
+***5 – Insert a blank line below every line which matches “Life” –
+# sed '/Life/G' a.txt
+
+***6 – Insert 5 spaces to the left of every lines –
+# sed 's/^/     /' a.txt
+
+>>> #Numbering lines
+1 – Number each line of a file (left alignment). **=** is used to number the line. \t is used for tab between number and sentence –
+# sed =  a.txt | sed 'N;s/\n/\t/'
+
+2 – Number each line of a file (number on left, right-aligned). This command is similar to `cat -n filename`.
+# sed = a.txt | sed 'N; s/^/     /; s/ *\(.\{4,\}\)\n/\1  /'
+
+3 – Number each line of file, only if line is not blank –
+#  sed '/./=' a.txt | sed '/./N; s/\n/ /'
+
+>>># Deleting lines
+1 – Delete a particular line –
+**Syntax: sed ‘nd’ filename
+# sed '5d' a.txt
+
+2 – Delete the last line
+**Syntax: sed ‘$d’ filename
+# sed '$d' a.txt
+
+3 – Delete line from range x to y
+Syntax: sed ‘x,yd’ filename
+**# sed '3,5d' a.txt
+
+4 – Delete from nth to last line
+Syntax: sed ‘nth,$d’ filename
+**# sed '2,$d' a.txt
+
+5 – Delete the patter matching line –
+Syntax: sed ‘/pattern/d’ filename
+**# sed '/life/d' a.txt
+
+6 – Delete lines starting from nth line and every 2nd line from there –
+Syntax: sed ‘n~2d’ filename
+**# sed '3~2d' a.txt
+
+7 – Delete the lines which matches the pattern and 2 lines after to that –
+Syntax: sed ‘/pattern/,+2d’ filename
+**# sed '/easy/,+2d' a.txt
+
+8 – Delete blank Lines
+# sed '/^$/d' a.txt
+
+9 – Delete empty lines or those begins with “#” –
+**# sed -i '/^#/d;/^$/d' a.txt
+
+>>># View/Print the files
+If we want to view content of file, then we use cat command and if we want to view the bottom and the top content of any file, we use tools such as head and tail. But what if we need to view a particular section in the middle of any file? Here we’ll discuss, how to use SED command to view a section of any file.
+
+1 – Viewing a file from x to y range –
+Syntax: sed -n ‘x,yp’ filename
+**# sed -n '2,5p' a.txt
+
+2 – View the entire file except the given range –
+Syntax: sed ‘x,yd’ filename
+**# sed '2,4d' a.txt
+
+3 – Print nth line of the file –
+Syntax: sed -n ‘address’p filename
+**# sed -n '4'p a.txt
+
+4 – Print lines from xth line to yth line.
+Syntax: sed -n ‘x,y’p filename
+**# sed -n '4,6'p a.txt
+
+5 – Print only the last line –
+Syntax: sed -n ‘$’p filename
+
+6 – Print from nth line to end of file –
+Syntax: sed -n ‘n,$p’ filename
+**# sed -n '3,$'p a.txt
+
+>>Pattern Printing
+7 – Print the line only which matches the pattern –
+Syntax: sed -n /pattern/p filename
+# sed -n /every/p a.txt
+
+8 – Print lines which matches the pattern i.e from input to xth line.
+Syntax: sed -n ‘/pattern/,xp’ filename
+# sed -n '/everyone/,5p' a.txt
+
+Following prints lines which matches the pattern, 3rd line matches the pattern “everyone”, so it prints from 3rd line to 5th line. Use $ in place of 5, if want to print the file till end.
+
+9 – Prints lines from the xth line of the input, up-to the line which matches the pattern. If the pattern doesn’t found then it prints up-to end of the file.
+Syntax: sed -n ‘x,/pattern/p’ filename
+Example :
+#sed -n '1,/everyone/p' a.txt
+
+10 – Print the lines which matches the pattern up-to the next xth lines –
+Syntax: sed -n ‘/pattern/,+xp’ filename
+#sed -n '/learn/,+2p' a.txt
+
+
+===================================================
+
+
+Linux Text Editors
+
+a program used for editing text files iin Linux, Most configuration of Linux system is done by editing text files.
+
+
+Word Count
+
+wc
+
+
+Exit Code/Return code
+code returns after each execution of commands in linux. ranges from 0 - 255
+when exit gives 0, that means the last command executed was successful otherwise, it will return a valid number ranges between 1 - 255 depend on the error message.
+
+echo $?
+
+===================================================
+User & Site Profile
+
+
+
+===================================================
+
+WRITE command - like a chat application on linux server that allows you to communicate with other users on the server
+
+$write username (receiver's username)
+type your message
+
+Recipient
+to respond to the message
+
+$write username (sender's username)
+
+typeyourmessage
+====================================================
+
+>>>WALL Command: broadcast message to all user logged in to CLI
+
+#wall
+# then type your message --- and enter twice
+# ctrl+d
